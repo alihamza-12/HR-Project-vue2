@@ -1,39 +1,62 @@
 <template>
   <Layout>
-    <template v-slot>
-      <h1>Announcement Management</h1>
-      <div class="employee-content">
-        <!-- Content will be added here -->
-        <p>Announcement management features coming soon</p>
+    <div class="container mt-4">
+      <h2 class="text-center mb-4">Announcements</h2>
+
+      <div class="text-end mb-3">
+        <button class="btn btn-primary" @click="showCreate = !showCreate">
+          {{ showCreate ? 'Hide Form' : 'Create Announcement' }}
+        </button>
       </div>
-    </template>
+
+      <CreateAnnouncement
+        v-if="showCreate"
+        @announcement-posted="addAnnouncement"
+      />
+      <AnnouncementList :announcements="announcements" />
+    </div>
   </Layout>
 </template>
 
 <script>
-import Layout from '@/components/Layout.vue';
+import Layout from '@/components/Layout.vue'; 
+import CreateAnnouncement from '@/assets/pages/CreateAnnouncement.vue'; 
+import AnnouncementList from '@/assets/pages/AnnouncementList.vue';
+import { mapState, mapActions } from 'vuex';
 
 export default {
-  name: 'AnnouncementPage',
+  name: "AnnouncementHere",
   components: {
-    Layout
+    Layout,
+    CreateAnnouncement,
+    AnnouncementList,
   },
   data() {
     return {
-      // Data properties will be added here
-    }
+      showCreate: false,
+    };
+  },
+  computed: {
+    ...mapState('announcement', ['announcements', 'loading', 'error']),
   },
   methods: {
-    // Methods will be added here
-  }
-}
+    ...mapActions('announcement', ['fetchAnnouncements', 'createAnnouncement']),
+    
+    async loadAnnouncements() {
+      await this.fetchAnnouncements();
+    },
+    
+    async addAnnouncement(newAnnouncement) {
+      try {
+        await this.createAnnouncement(newAnnouncement);
+        this.showCreate = false;
+      } catch (error) {
+        console.error('Failed to create announcement:', error);
+      }
+    },
+  },
+  async mounted() {
+    await this.loadAnnouncements();
+  },
+};
 </script>
-
-<style scoped>
-.employee-page {
-  padding: 20px;
-}
-.employee-content {
-  margin-top: 20px;
-}
-</style>

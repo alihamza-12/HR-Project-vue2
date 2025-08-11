@@ -10,14 +10,35 @@ import Employee from "./assets/pages/employee.vue";
 import EmployeeList from "./assets/pages/employee/EmployeeList.vue";
 import EmployeeForm from "./assets/pages/employee/EmployeeForm.vue";
 import EmployeeProfile from "./assets/pages/employee/EmployeeProfile.vue";
-import Attendance from "./assets/pages/attendendane.vue";
 import Payroll from "./assets/pages/payroll.vue";
+import AppPayrollForm from "./assets/pages/payroll/AppPayrollForm.vue";
+import AppPayrollList from "./assets/pages/payroll/AppPayrollList.vue";
 import PerformancePage from "./assets/pages/performance-page.vue";
-import Announcement from "./assets/pages/announcement.vue";
+import AppReviewSummary from "./assets/pages/performance/AppReviewSummary.vue";
+import AppReviewForm from "./assets/pages/performance/AppReviewForm.vue";
+import AppTaskEvaluation from "./assets/pages/performance/AppTaskEvaluation.vue";
+
+// route.js
+import AnnouncementList from './assets/pages/AnnouncementList.vue';
+import CreateAnnouncement from './assets/pages/CreateAnnouncement.vue';
+import Announcement from './assets/pages/announcement.vue';
 
 Vue.use(VueRouter);
 
 const routes = [
+    { path: '/announcements', component: AnnouncementList },
+  { path: '/create-announcement', component: CreateAnnouncement },
+  // Payroll routes
+  { path: "/payroll", component: Payroll },
+  { path: "/payroll/form", component: AppPayrollForm },
+  { path: "/payroll/list", component: AppPayrollList },
+
+  // Performance routes
+  { path: "/performance", component: PerformancePage },
+  { path: "/performance/summary", component: AppReviewSummary },
+  { path: "/performance/form", component: AppReviewForm },
+  { path: "/performance/evaluation", component: AppTaskEvaluation },
+
   {
     path: "/",
     redirect: "/signup",
@@ -69,15 +90,23 @@ const routes = [
   },
   {
     path: "/attendance",
-    component: Attendance,
-  },
-   {
-    path: "/payroll",
-    component: Payroll,
+    component: () => import('./assets/pages/Attendance.vue')
   },
   {
-    path: "/performance",
-    component: PerformancePage,
+    path: "/attendance-list",
+    component: () => import('./assets/pages/AttendanceList.vue')
+  },
+  {
+    path: "/attendance-check-in",
+    component: () => import('./assets/pages/AttendanceCheckIn.vue')
+  },
+  {
+    path: "/attendance-check-out",
+    component: () => import('./assets/pages/AttendanceCheckOut.vue')
+  },
+  {
+    path: "/attendance-report",
+    component: () => import('./assets/pages/AttendanceReport.vue')
   },
   {
     path: "/announcement",
@@ -91,15 +120,15 @@ const router = new VueRouter({
 });
 
 // Global route guard
-router.beforeEach((to, from, next) => {
-  const publicPages = ['/login', '/signup'];
-  const authRequired = !publicPages.includes(to.path);
-  const authUser = JSON.parse(localStorage.getItem('authUser'));
+// router.beforeEach((to, from, next) => {
+//   // const publicPages = ['/login', '/signup'];
+//   // const authRequired = !publicPages.includes(to.path);
+//   // const authUser = JSON.parse(localStorage.getItem('authUser'));
 
-  if (authRequired && !authUser) {
-    return next('/login');
-  }
-  next();
-});
+//   // if (authRequired && !authUser) {
+//   //   return next('/login');
+//   // }
+//   next();
+// });
 
 export default router;
